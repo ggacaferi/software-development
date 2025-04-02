@@ -95,28 +95,28 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
     # TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
     # Get the coordinates of all other snakes' bodies
-opponent_bodies = []
-for opponent in game_state['board']['snakes']:
-    opponent_bodies.extend(opponent['body'])
+    opponent_bodies = []
+    for opponent in game_state['board']['snakes']:
+        opponent_bodies.extend(opponent['body'])
 
-# Check if the potential move would put your head in the same position as another snake's body
-for move, isSafe in is_move_safe.items():
-    if isSafe:
-        new_head = {
-            "x": my_head["x"],
-            "y": my_head["y"]
-        }
-        if move == "up":
-            new_head["y"] += 1
-        elif move == "down":
-            new_head["y"] -= 1
-        elif move == "left":
-            new_head["x"] -= 1
-        elif move == "right":
-            new_head["x"] += 1
+    # Check if the potential move would put your head in the same position as another snake's body
+    for move, isSafe in is_move_safe.items():
+        if isSafe:
+            new_head = {
+                "x": my_head["x"],
+                "y": my_head["y"]
+            }
+            if move == "up":
+                new_head["y"] += 1
+            elif move == "down":
+                new_head["y"] -= 1
+            elif move == "left":
+                new_head["x"] -= 1
+            elif move == "right":
+                new_head["x"] += 1
 
-        if new_head in opponent_bodies:
-            is_move_safe[move] = False
+            if new_head in opponent_bodies:
+                is_move_safe[move] = False
 
     # Are there any safe moves left?
     safe_moves = []
