@@ -14,6 +14,9 @@ Flask = "^2.2.0"
 debugpy = "^1.6.2"
 python-lsp-server = {extras = ["yapf", "rope", "pyflakes"], version = "^1.5.0"}
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.11.5"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

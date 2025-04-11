@@ -1,0 +1,3 @@
+# ruff.toml
+line-length = 88
+exclude = ["__pycache__", ".git", "env"]
