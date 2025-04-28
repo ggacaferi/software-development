@@ -15,7 +15,7 @@
 // For more info see docs.battlesnake.com
 
 import runServer from './server.js';
-import { preventSelfCollision } from './snakeLogic.js';
+import { preventSelfCollision, preventWallCollision } from './snakeLogic.js';
 
 // info is called when you create your Battlesnake on play.battlesnake.com
 // and controls your Battlesnake's appearance
@@ -80,6 +80,7 @@ function move(gameState) {
 
   // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
   // opponents = gameState.board.snakes;
+  preventWallCollision(gameState, isMoveSafe);
 
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter(key => isMoveSafe[key]);
