@@ -30,3 +30,31 @@ function preventSelfCollision(gameState) {
 }
 
 export { preventSelfCollision };
+
+function preventWallCollision(gameState, isMoveSafe) {
+    const myHead = gameState.you.body[0];
+    const boardWidth = gameState.board.width;
+    const boardHeight = gameState.board.height;
+
+    // Check if moving up would go out of bounds
+    if (myHead.y + 1 >= boardHeight) {
+        isMoveSafe.up = false;
+    }
+
+    // Check if moving down would go out of bounds
+    if (myHead.y - 1 < 0) {
+        isMoveSafe.down = false;
+    }
+
+    // Check if moving left would go out of bounds
+    if (myHead.x - 1 < 0) {
+        isMoveSafe.left = false;
+    }
+
+    // Check if moving right would go out of bounds
+    if (myHead.x + 1 >= boardWidth) {
+        isMoveSafe.right = false;
+    }
+}
+
+export { preventSelfCollision, preventWallCollision };
