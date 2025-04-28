@@ -4,7 +4,7 @@
  */
 // Prevent your Battlesnake from colliding with itself
 
-function preventSelfCollision(gameState) {
+export function preventSelfCollision(gameState) {
     const myBody = gameState.you.body;
     const myHead = myBody[0];
     const myNeck = myBody[1];
