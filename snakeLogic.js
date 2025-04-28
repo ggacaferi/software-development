@@ -29,32 +29,15 @@ function preventSelfCollision(gameState) {
     return safeMoves;
 }
 
-export { preventSelfCollision };
-
-function preventWallCollision(gameState, isMoveSafe) {
-    const myHead = gameState.you.body[0];
+//Function for prevent
+export function preventWallCollision(gameState, isMoveSafe) {
     const boardWidth = gameState.board.width;
     const boardHeight = gameState.board.height;
+    const myHead = gameState.you.body[0];
 
-    // Check if moving up would go out of bounds
-    if (myHead.y + 1 >= boardHeight) {
-        isMoveSafe.up = false;
-    }
-
-    // Check if moving down would go out of bounds
-    if (myHead.y - 1 < 0) {
-        isMoveSafe.down = false;
-    }
-
-    // Check if moving left would go out of bounds
-    if (myHead.x - 1 < 0) {
-        isMoveSafe.left = false;
-    }
-
-    // Check if moving right would go out of bounds
-    if (myHead.x + 1 >= boardWidth) {
-        isMoveSafe.right = false;
-    }
+    // Remove the wall from possible moves to prevent wall-collision
+    isMoveSafe.up = !(myHead.y === 0);
+    isMoveSafe.down = !(myHead.y === boardHeight - 1);
+    isMoveSafe.left = !(myHead.x === 0);
+    isMoveSafe.right = !(myHead.x === boardWidth - 1);
 }
-
-export { preventSelfCollision, preventWallCollision };
