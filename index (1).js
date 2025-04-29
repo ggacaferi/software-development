@@ -16,6 +16,8 @@
 
 import runServer from './server.js';
 import { preventSelfCollision } from './snakeLogic.js';
+import { printBoard } from './boardPrinter.js';
+
 
 // info is called when you create your Battlesnake on play.battlesnake.com
 // and controls your Battlesnake's appearance
@@ -46,6 +48,7 @@ function end(gameState) {
 // Valid moves are "up", "down", "left", or "right"
 // See https://docs.battlesnake.com/api/example-move for available data
 function move(gameState) {
+  printBoard(gameState); // <<< print the board at the start of every move
 
   let isMoveSafe = {
     up: true,
@@ -53,7 +56,8 @@ function move(gameState) {
     left: true,
     right: true
   };
-
+  
+}
   // We've included code to prevent your Battlesnake from moving backwards
   const myHead = gameState.you.body[0];
   const myNeck = gameState.you.body[1];
