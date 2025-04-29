@@ -1,5 +1,7 @@
 ## PR Type
+
 What kind of change does this PR introduce?
+
 ```
 [ ] Bugfix
 [ ] Feature
@@ -11,8 +13,11 @@ What kind of change does this PR introduce?
 [ ] Tests
 [ ] Other
 ```
+
 ## What's new?
+
 -
 
 ## Screenshots
+
 N/A
