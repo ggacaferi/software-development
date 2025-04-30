@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) 2025 
+ *   Copyright (c) 2025
  *   All rights reserved.
  */
 // Welcome to
@@ -14,10 +14,14 @@
 // To get you started we've included code to prevent your Battlesnake from moving backwards.
 // For more info see docs.battlesnake.com
 
-import runServer from './server.js';
-import { preventSelfCollision, preventWallCollision, preventOtherSnakeCollision } from './snakeLogic.js';
-import { printBoard } from './boardPrinter.js';
-import { preventHeadToHead } from './headToHeadMovement.js';
+import runServer from "./server.js";
+import {
+  preventSelfCollision,
+  preventWallCollision,
+  preventOtherSnakeCollision,
+} from "./snakeLogic.js";
+import { printBoard } from "./boardPrinter.js";
+import { preventHeadToHead } from "./headToHeadMovement.js";
 
 // info is called when you create your Battlesnake on play.battlesnake.com
 // and controls your Battlesnake's appearance
@@ -54,7 +58,7 @@ function move(gameState) {
     up: true,
     down: true,
     left: true,
-    right: true
+    right: true,
   };
 
   // Prevent moving directly backwards into your own neck
@@ -71,13 +75,17 @@ function move(gameState) {
     isMoveSafe.up = false;
   }
 
-  if (myNeck.x < myHead.x) {        // Neck is left of head, don't move left
+  if (myNeck.x < myHead.x) {
+    // Neck is left of head, don't move left
     isMoveSafe.left = false;
-  } else if (myNeck.x > myHead.x) { // Neck is right of head, don't move right
+  } else if (myNeck.x > myHead.x) {
+    // Neck is right of head, don't move right
     isMoveSafe.right = false;
-  } else if (myNeck.y < myHead.y) { // Neck is below head, don't move down
+  } else if (myNeck.y < myHead.y) {
+    // Neck is below head, don't move down
     isMoveSafe.down = false;
-  } else if (myNeck.y > myHead.y) { // Neck is above head, don't move up
+  } else if (myNeck.y > myHead.y) {
+    // Neck is above head, don't move up
     isMoveSafe.up = false;
   }
 
@@ -94,7 +102,7 @@ function move(gameState) {
   preventHeadToHead(gameState, isMoveSafe);
 
   // Are there any safe moves left?
-  const safeMoves = Object.keys(isMoveSafe).filter(key => isMoveSafe[key]);
+  const safeMoves = Object.keys(isMoveSafe).filter((key) => isMoveSafe[key]);
   if (safeMoves.length == 0) {
     console.log(`MOVE ${gameState.turn}: No safe moves detected! Moving down`);
     return { move: "down" };
@@ -103,7 +111,7 @@ function move(gameState) {
   // Choose a random move from the safe moves
   const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
 
-  console.log(`MOVE ${gameState.turn}: ${nextMove}`)
+  console.log(`MOVE ${gameState.turn}: ${nextMove}`);
   return { move: nextMove };
 }
 
@@ -112,5 +120,5 @@ runServer({
   info: info,
   start: start,
   move: move,
-  end: end
+  end: end,
 });
