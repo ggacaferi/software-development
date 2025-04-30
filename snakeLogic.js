@@ -64,3 +64,43 @@ export function preventWallCollision(gameState, isMoveSafe) {
     isMoveSafe.left = !(myHead.x === 0);
     isMoveSafe.right = !(myHead.x === boardWidth - 1);
 }
+
+// Find and prioritize the closest food using Manhattan distance
+export function findClosestFood(gameState, isMoveSafe) {
+    const myHead = gameState.you.body[0];
+    const food = gameState.board.food;
+    
+    if (food.length === 0) return null;
+
+    // Find the closest food using Manhattan distance
+    let closestFood = null;
+    let minDistance = Infinity;
+
+    food.forEach(foodItem => {
+        const distance = Math.abs(myHead.x - foodItem.x) + Math.abs(myHead.y - foodItem.y);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestFood = foodItem;
+        }
+    });
+
+    // Determine which moves bring us closer to the food
+    const preferredMoves = [];
+    if (closestFood.x < myHead.x && isMoveSafe.left) {
+        preferredMoves.push("left");
+    } else if (closestFood.x > myHead.x && isMoveSafe.right) {
+        preferredMoves.push("right");
+    }
+
+    if (closestFood.y < myHead.y && isMoveSafe.down) {
+        preferredMoves.push("down");
+    } else if (closestFood.y > myHead.y && isMoveSafe.up) {
+        preferredMoves.push("up");
+    }
+
+    // If no direct moves toward food are safe, return null
+    if (preferredMoves.length === 0) return null;
+
+    // Return a random move from the preferred moves to add some unpredictability
+    return preferredMoves[Math.floor(Math.random() * preferredMoves.length)];
+}

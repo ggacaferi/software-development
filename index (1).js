@@ -15,7 +15,7 @@
 // For more info see docs.battlesnake.com
 
 import runServer from './server.js';
-import { preventSelfCollision, preventWallCollision, preventOtherSnakeCollision } from './snakeLogic.js';
+import { preventSelfCollision, preventWallCollision, preventOtherSnakeCollision, findClosestFood } from './snakeLogic.js';
 import { printBoard } from './boardPrinter.js';
 import { preventHeadToHead } from './headToHeadMovement.js';
 
@@ -92,6 +92,13 @@ function move(gameState) {
 
   // Prevents head-to-head collisions by marking moves unsafe if an enemy of equal or greater length could contest the same square.
   preventHeadToHead(gameState, isMoveSafe);
+
+  // Try to find food if health is low or just generally
+  const foodMove = findClosestFood(gameState, isMoveSafe);
+  if (foodMove) {
+    console.log(`MOVE ${gameState.turn}: Moving towards food - ${foodMove}`);
+    return { move: foodMove };
+  }
 
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter(key => isMoveSafe[key]);
