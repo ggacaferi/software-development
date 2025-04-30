@@ -14,20 +14,20 @@ export default defineConfig([
       js,
       sonarjs,
       unicorn,
-      "eslint-comments": eslintComments
+      "eslint-comments": eslintComments,
     },
     rules: {
-      ...js.configs.recommended.rules,                   // JavaScript recommended
-      ...sonarjs.configs.recommended.rules,               // SonarJS rules
-      ...unicorn.configs.recommended.rules,               // Unicorn rules
-      ...eslintComments.configs.recommended.rules,        // ESLint Comments rules
-      ...prettier.rules                                   // Prettier formatting rules
-    }
+      ...js.configs.recommended.rules, // JavaScript recommended
+      ...sonarjs.configs.recommended.rules, // SonarJS rules
+      ...unicorn.configs.recommended.rules, // Unicorn rules
+      ...eslintComments.configs.recommended.rules, // ESLint Comments rules
+      ...prettier.rules, // Prettier formatting rules
+    },
   },
   {
     files: ["**/*.{js,mjs,cjs}"],
     languageOptions: {
-      globals: globals.browser
-    }
-  }
+      globals: globals.browser,
+    },
+  },
 ]);
