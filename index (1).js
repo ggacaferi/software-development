@@ -24,10 +24,6 @@ import { preventHeadToHead } from './headToHeadMovement.js';
 function info() {
   return {
     apiversion: "1",
-    author: "", // TODO: Your Battlesnake Username
-    color: "#888888", // TODO: Choose color
-    head: "default", // TODO: Choose head
-    tail: "default", // TODO: Choose tail
     author: "mouzounis",
     color: "#FF46A2",
     head: "all-seeing",
@@ -68,16 +64,6 @@ function move(gameState) {
   } else if (myNeck.y < myHead.y) {
     isMoveSafe.down = false;
   } else if (myNeck.y > myHead.y) {
-    isMoveSafe.up = false;
-  }
-
-  if (myNeck.x < myHead.x) {        // Neck is left of head, don't move left
-    isMoveSafe.left = false;
-  } else if (myNeck.x > myHead.x) { // Neck is right of head, don't move right
-    isMoveSafe.right = false;
-  } else if (myNeck.y < myHead.y) { // Neck is below head, don't move down
-    isMoveSafe.down = false;
-  } else if (myNeck.y > myHead.y) { // Neck is above head, don't move up
     isMoveSafe.up = false;
   }
 
