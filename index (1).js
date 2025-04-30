@@ -14,24 +14,18 @@
 // To get you started we've included code to prevent your Battlesnake from moving backwards.
 // For more info see docs.battlesnake.com
 
-import runServer from "./server.js";
-import {
-  preventSelfCollision,
-  preventWallCollision,
-  preventOtherSnakeCollision,
-} from "./snakeLogic.js";
-import { printBoard } from "./boardPrinter.js";
-import { preventHeadToHead } from "./headToHeadMovement.js";
+
+import runServer from './server.js';
+import { preventSelfCollision, preventWallCollision, preventOtherSnakeCollision, findClosestFood } from './snakeLogic.js';
+import { printBoard } from './boardPrinter.js';
+import { preventHeadToHead } from './headToHeadMovement.js';
+
 
 // info is called when you create your Battlesnake on play.battlesnake.com
 // and controls your Battlesnake's appearance
 function info() {
   return {
     apiversion: "1",
-    author: "", // TODO: Your Battlesnake Username
-    color: "#888888", // TODO: Choose color
-    head: "default", // TODO: Choose head
-    tail: "default", // TODO: Choose tail
     author: "mouzounis",
     color: "#FF46A2",
     head: "all-seeing",
@@ -75,20 +69,6 @@ function move(gameState) {
     isMoveSafe.up = false;
   }
 
-  if (myNeck.x < myHead.x) {
-    // Neck is left of head, don't move left
-    isMoveSafe.left = false;
-  } else if (myNeck.x > myHead.x) {
-    // Neck is right of head, don't move right
-    isMoveSafe.right = false;
-  } else if (myNeck.y < myHead.y) {
-    // Neck is below head, don't move down
-    isMoveSafe.down = false;
-  } else if (myNeck.y > myHead.y) {
-    // Neck is above head, don't move up
-    isMoveSafe.up = false;
-  }
-
   // Prevent your Battlesnake from colliding with itself
   preventSelfCollision(gameState, isMoveSafe);
 
@@ -100,6 +80,13 @@ function move(gameState) {
 
   // Prevents head-to-head collisions by marking moves unsafe if an enemy of equal or greater length could contest the same square.
   preventHeadToHead(gameState, isMoveSafe);
+
+  // Try to find food if health is low or just generally
+  const foodMove = findClosestFood(gameState, isMoveSafe);
+  if (foodMove) {
+    console.log(`MOVE ${gameState.turn}: Moving towards food - ${foodMove}`);
+    return { move: foodMove };
+  }
 
   // Are there any safe moves left?
   const safeMoves = Object.keys(isMoveSafe).filter((key) => isMoveSafe[key]);
