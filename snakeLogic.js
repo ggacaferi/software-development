@@ -104,3 +104,39 @@ export function findClosestFood(gameState, isMoveSafe) {
     // Return a random move from the preferred moves to add some unpredictability
     return preferredMoves[Math.floor(Math.random() * preferredMoves.length)];
 }
+
+// Check if the snake can move into another snake's tail
+export function allowTailCollision(gameState, isMoveSafe) {
+  const opponents = gameState.board.snakes;
+  const myHead = gameState.you.body[0];
+
+  // Check for other snakes' tails
+  opponents.forEach((snake) => {
+    // Ignore your own snake
+    if (snake.id !== gameState.you.id) {
+      const tail = snake.body[snake.body.length - 1]; // The last segment of the opponent's body
+
+      // If we are trying to move to a tail and there's no food, allow it
+      if (myHead.x === tail.x && myHead.y === tail.y && !isFoodNextTurn(gameState)) {
+        // Allow movement into the tail position
+        isMoveSafe.right = true;
+        isMoveSafe.left = true;
+        isMoveSafe.up = true;
+        isMoveSafe.down = true;
+      }
+    }
+  });
+}
+
+// Helper function to check if there's food in the next turn
+function isFoodNextTurn(gameState) {
+  const myHead = gameState.you.body[0];
+  const food = gameState.board.food;
+
+  return food.some(foodItem => 
+    (foodItem.x === myHead.x + 1 && foodItem.y === myHead.y) || 
+    (foodItem.x === myHead.x - 1 && foodItem.y === myHead.y) || 
+    (foodItem.x === myHead.x && foodItem.y === myHead.y + 1) || 
+    (foodItem.x === myHead.x && foodItem.y === myHead.y - 1)
+  );
+}
