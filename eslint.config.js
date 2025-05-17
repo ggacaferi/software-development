@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import globals from "globals";
 import { defineConfig } from "eslint/config";
+import jestPlugin from "eslint-plugin-jest"
 
 import sonarjs from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
@@ -30,4 +31,20 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    files: ["**/__tests__/**/*.js"],
+    plugins: {
+      jest: jestPlugin,
+    },
+    rules: {
+      ...jestPlugin.configs.recommended.rules,
+      "jest/no-disabled-tests": "warn",
+      "jest/no-focused-tests": "error",
+      "jest/no-identical-title": "error",
+      "jest/prefer-to-have-length": "warn",
+      "jest/valid-expect": "error",
+      "jest/prefer-expect-assertions": "off",
+      "jest/no-test-return-statement": "error"
+    }
+  }
 ]);

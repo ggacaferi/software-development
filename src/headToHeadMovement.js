@@ -1,5 +1,5 @@
 // Exported function to prevent risky head-to-head collisions
-export function preventHeadToHead(gameState, isMoveSafe) {
+export function headToHeadMovement(gameState, isMoveSafe) {
   const myHead = gameState.you.body[0]; // Your snake's head position
   const myLength = gameState.you.length; // Your snake's length
   const opponents = gameState.board.snakes; // All snakes on the board
