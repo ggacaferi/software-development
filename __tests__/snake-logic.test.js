@@ -93,7 +93,7 @@ describe('snakeLogic', () => {
       };
       
       const isMoveSafe = { up: true, down: true, left: true, right: true };
-      expect(findClosestFood(gameState, isMoveSafe)).toBe('up');
+      expect(findClosestFood(game');
     });
   });
 
