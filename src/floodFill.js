@@ -1,7 +1,6 @@
-
 /*
- *   Copyright (c) 2025
- *   All rights reserved.
+ * Copyright (c) 2025
+ * All rights reserved.
  */
 
 export function floodFill(startPos, boardState, maxIterations = 1000) {
@@ -11,8 +10,8 @@ export function floodFill(startPos, boardState, maxIterations = 1000) {
     let area = 0;
 
     // Check if starting position is out of bounds or blocked
-    if (startPos.x < 0 || startPos.x >= width || 
-        startPos.y < 0 || startPos.y >= height || 
+    if (startPos.x < 0 || startPos.x >= width ||
+        startPos.y < 0 || startPos.y >= height ||
         map[startPos.y][startPos.x] === 1) {
         return 0;
     }
