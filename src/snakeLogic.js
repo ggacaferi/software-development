@@ -9,18 +9,17 @@ export function preventSelfCollision(gameState) {
   const myHead = myBody[0];
   const myNeck = myBody[1];
 
-  // Remove the neck from possible moves to prevent self-collision
   const possibleMoves = ["up", "down", "left", "right"];
   const safeMoves = possibleMoves.filter((move) => {
     switch (move) {
       case "up":
-        return !(myHead.x === myNeck.x && myHead.y - 1 === myNeck.y);
+        return !(myNeck && myHead.x === myNeck.x && myHead.y + 1 === myNeck.y);
       case "down":
-        return !(myHead.x === myNeck.x && myHead.y + 1 === myNeck.y);
+        return !(myNeck && myHead.x === myNeck.x && myHead.y - 1 === myNeck.y);
       case "left":
-        return !(myHead.x - 1 === myNeck.x && myHead.y === myNeck.y);
+        return !(myNeck && myHead.x - 1 === myNeck.x && myHead.y === myNeck.y);
       case "right":
-        return !(myHead.x + 1 === myNeck.x && myHead.y === myNeck.y);
+        return !(myNeck && myHead.x + 1 === myNeck.x && myHead.y === myNeck.y);
       default:
         return true;
     }
@@ -34,109 +33,98 @@ export function preventOtherSnakeCollision(gameState, isMoveSafe) {
   const opponents = gameState.board.snakes;
   const myHead = gameState.you.body[0];
 
-  // Check for other snakes' bodies
   opponents.forEach((snake) => {
-    // Ignore your own snake
-    if (snake.id !== gameState.you.id) {
-      snake.body.forEach((segment) => {
-        // Check each segment of the opponent snake's body
-        if (myHead.x === segment.x && myHead.y === segment.y) {
-          // If the head of your snake collides with another snake's body, mark the move as unsafe
-          if (myHead.y > segment.y) isMoveSafe.down = false;
-          if (myHead.y < segment.y) isMoveSafe.up = false;
-          if (myHead.x > segment.x) isMoveSafe.left = false;
-          if (myHead.x < segment.x) isMoveSafe.right = false;
-        }
-      });
-    }
+    snake.body.forEach((segment) => {
+      if (myHead.x === segment.x && myHead.y + 1 === segment.y) {
+        isMoveSafe.up = false;
+      }
+      if (myHead.x === segment.x && myHead.y - 1 === segment.y) {
+        isMoveSafe.down = false;
+      }
+      if (myHead.x - 1 === segment.x && myHead.y === segment.y) {
+        isMoveSafe.left = false;
+      }
+      if (myHead.x + 1 === segment.x && myHead.y === segment.y) {
+        isMoveSafe.right = false;
+      }
+    });
   });
+
+  return isMoveSafe;
 }
 
-// Function to prevent wall collisions
+// Prevent your Battlesnake from colliding with walls
 export function preventWallCollision(gameState, isMoveSafe) {
   const boardWidth = gameState.board.width;
   const boardHeight = gameState.board.height;
   const myHead = gameState.you.body[0];
 
-  // Remove the wall from possible moves to prevent wall-collision
-  isMoveSafe.up = !(myHead.y === 0);
-  isMoveSafe.down = !(myHead.y === boardHeight - 1);
-  isMoveSafe.left = !(myHead.x === 0);
-  isMoveSafe.right = !(myHead.x === boardWidth - 1);
+  if (myHead.x === 0) isMoveSafe.left = false;
+  if (myHead.x === boardWidth - 1) isMoveSafe.right = false;
+  if (myHead.y === 0) isMoveSafe.down = false;
+  if (myHead.y === boardHeight - 1) isMoveSafe.up = false;
+
+  return isMoveSafe;
 }
 
 // Find and prioritize the closest food using Manhattan distance
 export function findClosestFood(gameState, isMoveSafe) {
-    const myHead = gameState.you.body[0];
-    const food = gameState.board.food;
-    
-    if (food.length === 0) return null;
+  const myHead = gameState.you.body[0];
+  const food = gameState.board.food;
 
-    // Find the closest food using Manhattan distance
-    let closestFood = null;
-    let minDistance = Infinity;
+  if (food.length === 0) return null;
 
-    food.forEach(foodItem => {
-        const distance = Math.abs(myHead.x - foodItem.x) + Math.abs(myHead.y - foodItem.y);
-        if (distance < minDistance) {
-            minDistance = distance;
-            closestFood = foodItem;
-        }
-    });
+  let closestFood = null;
+  let minDistance = Infinity;
 
-    // Determine which moves bring us closer to the food
-    const preferredMoves = [];
-    if (closestFood.x < myHead.x && isMoveSafe.left) {
-        preferredMoves.push("left");
-    } else if (closestFood.x > myHead.x && isMoveSafe.right) {
-        preferredMoves.push("right");
+  food.forEach((foodItem) => {
+    const distance = Math.abs(myHead.x - foodItem.x) + Math.abs(myHead.y - foodItem.y);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestFood = foodItem;
     }
+  });
 
-    if (closestFood.y < myHead.y && isMoveSafe.down) {
-        preferredMoves.push("down");
-    } else if (closestFood.y > myHead.y && isMoveSafe.up) {
-        preferredMoves.push("up");
-    }
+  const dx = closestFood.x - myHead.x;
+  const dy = closestFood.y - myHead.y;
 
-    // If no direct moves toward food are safe, return null
-    if (preferredMoves.length === 0) return null;
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    if (dx < 0 && isMoveSafe.left) return "left";
+    if (dx > 0 && isMoveSafe.right) return "right";
+    if (dy < 0 && isMoveSafe.down) return "down";
+    if (dy > 0 && isMoveSafe.up) return "up";
+  } else {
+    if (dy < 0 && isMoveSafe.down) return "down";
+    if (dy > 0 && isMoveSafe.up) return "up";
+    if (dx < 0 && isMoveSafe.left) return "left";
+    if (dx > 0 && isMoveSafe.right) return "right";
+  }
 
-    // Return a random move from the preferred moves to add some unpredictability
-    return preferredMoves[Math.floor(Math.random() * preferredMoves.length)];
+  return null;
 }
 
-// Check if the snake can move into another snake's tail
+// Allow moving into another snake's tail if no food is present
 export function allowTailCollision(gameState, isMoveSafe) {
   const opponents = gameState.board.snakes;
   const myHead = gameState.you.body[0];
 
-  // Check for other snakes' tails
-  opponents.forEach((snake) => {
-    // Ignore your own snake
-    if (snake.id !== gameState.you.id) {
-      const tail = snake.body[snake.body.length - 1]; // The last segment of the opponent's body
-
-      // If we are trying to move to a tail and there's no food, allow it
-      if (myHead.x === tail.x && myHead.y === tail.y && !isFoodNextTurn(gameState)) {
-        // Allow movement into the tail position
-        isMoveSafe.right = true;
-        isMoveSafe.left = true;
+  if (gameState.board.food.length === 0) {
+    opponents.forEach((snake) => {
+      const tail = snake.body[snake.body.length - 1];
+      if (myHead.x === tail.x && myHead.y + 1 === tail.y) {
         isMoveSafe.up = true;
+      }
+      if (myHead.x === tail.x && myHead.y - 1 === tail.y) {
         isMoveSafe.down = true;
       }
-    }
-  });
-}
+      if (myHead.x - 1 === tail.x && myHead.y === tail.y) {
+        isMoveSafe.left = true;
+      }
+      if (myHead.x + 1 === tail.x && myHead.y === tail.y) {
+        isMoveSafe.right = true;
+      }
+    });
+  }
 
-// Helper function to check if there's food in the next turn
-function isFoodNextTurn(gameState) {
-  const myHead = gameState.you.body[0];
-  const food = gameState.board.food;
-
-  return food.some(foodItem => 
-    (foodItem.x === myHead.x + 1 && foodItem.y === myHead.y) || 
-    (foodItem.x === myHead.x - 1 && foodItem.y === myHead.y) || 
-    (foodItem.x === myHead.x && foodItem.y === myHead.y + 1) || 
-    (foodItem.x === myHead.x && foodItem.y === myHead.y - 1)
-  );
+  return isMoveSafe;
 }

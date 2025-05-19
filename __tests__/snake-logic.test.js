@@ -27,8 +27,7 @@ describe('snakeLogic', () => {
       const gameState = {
         you: {
           body: [
-            { x: 5, y: 5 },
-            { x: 4, y: 5 } // neck (coming from right)
+            { x: 5, y: 5 } // head only, no neck
           ]
         }
       };
@@ -48,7 +47,7 @@ describe('snakeLogic', () => {
           snakes: [
             {
               id: 'enemy',
-              body: [{ x: 5, y: 4 }] // enemy head above
+              body: [{ x: 5, y: 6 }] // enemy head above
             }
           ]
         }
@@ -111,7 +110,7 @@ describe('snakeLogic', () => {
               body: [
                 { x: 6, y: 5 }, // head
                 { x: 6, y: 6 }, // body
-                { x: 5, y: 5 }   // tail (same position as our head)
+                { x: 5, y: 6 }   // tail
               ]
             }
           ],
@@ -120,8 +119,8 @@ describe('snakeLogic', () => {
       };
       
       const isMoveSafe = { up: false, down: false, left: false, right: false };
-      expect(Object.values(isMoveSafe).some(Boolean)).toBe(true);
-      expect(Object.values(isMoveSafe).some(v => v)).toBe(true);
+      allowTailCollision(gameState, isMoveSafe);
+      expect(isMoveSafe.up).toBe(true);
     });
   });
 });
