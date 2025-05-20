@@ -18,7 +18,7 @@
 import runServer from './server.js';
 import { preventSelfCollision, preventWallCollision, preventOtherSnakeCollision, findClosestFood, allowTailCollision } from './snakeLogic.js';
 import { printBoard } from './boardPrinter.js';
-import { preventHeadToHead } from './headToHeadMovement.js';
+import { headToHeadMovement } from './headToHeadMovement.js';
 
 
 // info is called when you create your Battlesnake on play.battlesnake.com
@@ -79,7 +79,7 @@ function move(gameState) {
   preventOtherSnakeCollision(gameState, isMoveSafe);
 
   // Prevents head-to-head collisions by marking moves unsafe if an enemy of equal or greater length could contest the same square.
-  preventHeadToHead(gameState, isMoveSafe);
+  headToHeadMovement(gameState, isMoveSafe);
 
   // Allow tail collision if no food is in the way
   allowTailCollision(gameState, isMoveSafe);
