@@ -1,4 +1,16 @@
-// Exported function to prevent risky head-to-head collisions
+/**
+ * Updates the isMoveSafe object to mark moves as unsafe if a head-to-head collision
+ * with an equal or longer enemy snake is possible in any direction.
+ *
+ * @param {Object} gameState - The current game state.
+ * @param {Object} gameState.you - Your snake object.
+ * @param {Array<{x: number, y: number}>} gameState.you.body - Array of your snake's body segments, head first.
+ * @param {number} gameState.you.length - The length of your snake.
+ * @param {Object} gameState.board - The board object.
+ * @param {Array<Object>} gameState.board.snakes - Array of all snake objects on the board.
+ * @param {Object} isMoveSafe - An object with keys 'up', 'down', 'left', 'right' indicating safe moves (will be mutated).
+ */
+
 export function headToHeadMovement(gameState, isMoveSafe) {
   const myHead = gameState.you.body[0]; // Your snake's head position
   const myLength = gameState.you.length; // Your snake's length

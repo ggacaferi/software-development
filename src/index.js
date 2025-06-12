@@ -21,8 +21,12 @@ import { printBoard } from './boardPrinter.js';
 import { headToHeadMovement } from './headToHeadMovement.js';
 
 
-// info is called when you create your Battlesnake on play.battlesnake.com
-// and controls your Battlesnake's appearance
+
+/**
+ * Returns Battlesnake info for play.battlesnake.com (appearance and author).
+ * @returns {Object} Info object with apiversion, author, color, head, and tail.
+ */
+
 function info() {
   return {
     apiversion: "1",
@@ -33,15 +37,36 @@ function info() {
   };
 }
 
-// start is called when your Battlesnake is starting a game
+
+/**
+ * Called when your Battlesnake is starting a game.
+ * @param {Object} gameState - The initial game state.
+ */
 function start(gameState) {
   console.log("Starting game", gameState);
 }
 
-// end is called when your Battlesnake's game has ended
+/**
+ * Called when your Battlesnake's game has ended.
+ * @param {Object} gameState - The final game state.
+ */
 function end(gameState) {
   console.log("Game over", gameState);
 }
+
+
+/**
+ * Decides the next move for your Battlesnake.
+ * @param {Object} gameState - The current game state.
+ * @param {Object} gameState.you - Your snake object.
+ * @param {Array<{x: number, y: number}>} gameState.you.body - Array of your snake's body segments, head first.
+ * @param {Object} gameState.board - The board object.
+ * @param {Array<Object>} gameState.board.snakes - Array of all snake objects on the board.
+ * @param {Array<{x: number, y: number}>} gameState.board.food - Array of food positions.
+ * @param {number} gameState.turn - The current turn number.
+ * @returns {{move: string}} The chosen move direction.
+ */
+
 
 function move(gameState) {
   // Print the current board state for debugging
