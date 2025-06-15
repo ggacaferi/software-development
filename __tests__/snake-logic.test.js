@@ -4,9 +4,10 @@ import {
   preventWallCollision,
   findClosestFood,
   allowTailCollision,
+  findSmallestSnakeToHunt,
 } from "../src/snakeLogic.js";
-
 import { describe, it, expect, test } from "@jest/globals";
+
 
 describe("snakeLogic", () => {
   describe("preventSelfCollision", () => {
@@ -267,6 +268,119 @@ describe("snakeLogic", () => {
       allowTailCollision(gameState, isMoveSafe);
 
       expect(isMoveSafe.up).toBe(true);
+        });
+      });
+
+      // --- Additional tests for findSmallestSnakeToHunt ---
+
+      describe("findSmallestSnakeToHunt", () => {
+        it("should return null if there are no smaller snakes", () => {
+      const gameState = {
+        you: { body: [{ x: 5, y: 5 }] },
+        board: {
+          snakes: [
+        { body: [{ x: 1, y: 1 }], length: 10 },
+        { body: [{ x: 9, y: 9 }], length: 12 },
+          ],
+        },
+      };
+      const isMoveSafe = { up: true, down: true, left: true, right: true };
+      const myLength = 10;
+      const result = findSmallestSnakeToHunt(gameState, isMoveSafe, myLength);
+      expect(result).toBeNull();
+        });
+
+        it("should return direction towards the closest smaller snake (right)", () => {
+      const gameState = {
+        you: { body: [{ x: 2, y: 2 }] },
+        board: {
+          snakes: [
+        { body: [{ x: 5, y: 2 }], length: 2 }, // right, smaller
+        { body: [{ x: 2, y: 5 }], length: 5 }, // up, smaller but farther
+        { body: [{ x: 1, y: 1 }], length: 10 }, // not smaller
+          ],
+        },
+      };
+      const isMoveSafe = { up: true, down: true, left: true, right: true };
+      const myLength = 6;
+      const result = findSmallestSnakeToHunt(gameState, isMoveSafe, myLength);
+      expect(result).toBe("right");
+        });
+
+        it("should return direction towards the closest smaller snake (up)", () => {
+      const gameState = {
+        you: { body: [{ x: 2, y: 2 }] },
+        board: {
+          snakes: [
+        { body: [{ x: 2, y: 5 }], length: 2 }, // up, smaller
+        { body: [{ x: 5, y: 2 }], length: 5 }, // right, smaller but farther
+          ],
+        },
+      };
+      const isMoveSafe = { up: true, down: true, left: true, right: true };
+      const myLength = 6;
+      const result = findSmallestSnakeToHunt(gameState, isMoveSafe, myLength);
+      expect(result).toBe("up");
+        });
+
+        it("should return null if no safe move towards smaller snake", () => {
+      const gameState = {
+        you: { body: [{ x: 2, y: 2 }] },
+        board: {
+          snakes: [
+        { body: [{ x: 2, y: 5 }], length: 2 }, // up, smaller
+          ],
+        },
+      };
+      const isMoveSafe = { up: false, down: false, left: false, right: false };
+      const myLength = 6;
+      const result = findSmallestSnakeToHunt(gameState, isMoveSafe, myLength);
+      expect(result).toBeNull();
+        });
+
+        it("should prefer horizontal move if dx == dy", () => {
+      const gameState = {
+        you: { body: [{ x: 2, y: 2 }] },
+        board: {
+          snakes: [
+        { body: [{ x: 4, y: 4 }], length: 2 }, // dx=2, dy=2
+          ],
+        },
+      };
+      const isMoveSafe = { up: true, down: true, left: true, right: true };
+      const myLength = 6;
+      const result = findSmallestSnakeToHunt(gameState, isMoveSafe, myLength);
+      expect(result).toBe("right");
+        });
+
+        it("should return left if closest smaller snake is to the left and move is safe", () => {
+      const gameState = {
+        you: { body: [{ x: 5, y: 5 }] },
+        board: {
+          snakes: [
+        { body: [{ x: 3, y: 5 }], length: 2 }, // left, smaller
+          ],
+        },
+      };
+      const isMoveSafe = { up: true, down: true, left: true, right: true };
+      const myLength = 6;
+      const result = findSmallestSnakeToHunt(gameState, isMoveSafe, myLength);
+      expect(result).toBe("left");
+        });
+
+        it("should return down if closest smaller snake is below and move is safe", () => {
+      const gameState = {
+        you: { body: [{ x: 5, y: 5 }] },
+        board: {
+          snakes: [
+        { body: [{ x: 5, y: 3 }], length: 2 }, // down, smaller
+          ],
+        },
+      };
+      const isMoveSafe = { up: true, down: true, left: true, right: true };
+      const myLength = 6;
+      const result = findSmallestSnakeToHunt(gameState, isMoveSafe, myLength);
+      expect(result).toBe("down");
+        });
+      });
     });
-  });
-});
