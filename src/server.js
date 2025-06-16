@@ -1,5 +1,15 @@
 import express from "express";
 
+/**
+ * Starts the Battlesnake server and sets up the API endpoints.
+ *
+ * @param {Object} handlers - An object containing handler functions for the Battlesnake API.
+ * @param {Function} handlers.info - Returns Battlesnake info for the root endpoint.
+ * @param {Function} handlers.start - Called when a new game starts.
+ * @param {Function} handlers.move - Called on every turn to determine the next move.
+ * @param {Function} handlers.end - Called when the game ends.
+ */
+
 export default function runServer(handlers) {
   const app = express();
   app.use(express.json());
