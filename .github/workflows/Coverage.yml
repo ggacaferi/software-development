@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Debug Node.js environment
+        run: node -v && npm -v && npm ls
+
       - name: Run tests with coverage
         run: npm run test:coverage
 
