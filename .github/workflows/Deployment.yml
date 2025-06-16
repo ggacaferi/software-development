@@ -22,10 +22,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build application
-        run: npm run build
+      - name: Install Railway CLI
+        run: npm install -g railway
 
-      - name: Deploy to production
-        run: |
-          echo "Deploying application..."
-          # Add your deployment commands here
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up
