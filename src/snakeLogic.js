@@ -128,3 +128,37 @@ export function allowTailCollision(gameState, isMoveSafe) {
 
   return isMoveSafe;
 }
+
+
+export function findSmallestSnakeToHunt(gameState, isMoveSafe, myLength) {
+  const opponents = gameState.board.snakes;
+
+  // Look for snakes smaller than yours
+  const smallerSnakes = opponents.filter(snake => snake.length < myLength);
+  if (smallerSnakes.length === 0) return null;
+
+  // Find the closest smaller snake
+  let closestSnake = null;
+  let minDistance = Infinity;
+  smallerSnakes.forEach(snake => {
+    const enemyHead = snake.body[0];
+    const distance = Math.abs(myHead.x - enemyHead.x) + Math.abs(myHead.y - enemyHead.y);
+    if (distance < minDistance) {
+      minDistance = distance;
+      closestSnake = enemyHead;
+    }
+  });
+
+  // Move towards the closest smaller snake
+  const dx = closestSnake.x - myHead.x;
+  const dy = closestSnake.y - myHead.y;
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    if (dx < 0 && isMoveSafe.left) return "left";
+    if (dx > 0 && isMoveSafe.right) return "right";
+  } else {
+    if (dy < 0 && isMoveSafe.down) return "down";
+    if (dy > 0 && isMoveSafe.up) return "up";
+  }
+
+  return null;
+}
