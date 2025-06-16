@@ -23,7 +23,7 @@
     "railway": "^2.0.17"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.1",
+    "@eslint/js": "^9.29.0",
     "@types/jest": "^29.5.14",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
