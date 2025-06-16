@@ -14,7 +14,6 @@
     "lint:test": "eslint __tests__ --ext .js",
     "test:coverage": "jest -- --coverage",   
     "start": "node src/index.js"
-
   },
   "dependencies": {
     "@types/node": "^18.0.6",
