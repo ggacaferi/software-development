@@ -12,7 +12,7 @@
     "test:ci": "jest --ci --runInBand --coverage",
     "lint:fix": "eslint . --fix",
     "lint:test": "eslint __tests__ --ext .js",
-    "start": "node index.js",
+    "start": "node src/index.js",
     "test:coverage": "jest -- --coverage"
 
     
