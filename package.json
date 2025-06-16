@@ -16,6 +16,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "@railway/cli": "^4.5.3",
     "@types/node": "^18.0.6",
     "express": "^4.18.1",
     "jsdoc": "^4.0.4",
