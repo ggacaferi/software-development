@@ -3,6 +3,23 @@
  * All rights reserved.
  */
 
+/**
+ * Prints a visual representation of the Battlesnake board to the console.
+ *
+ * - Your snake's head is shown as 'H', body as 'S'.
+ * - Enemy snakes' heads are 'h', bodies are 'E'.
+ * - Food is shown as 'F'.
+ * - Empty spaces are '.'.
+ *
+ * @param {Object} gameState - The current game state, including board, food, and snakes.
+ * @param {Object} gameState.board - The board object containing width, height, food, and snakes.
+ * @param {number} gameState.board.width - The width of the board.
+ * @param {number} gameState.board.height - The height of the board.
+ * @param {Array<Object>} gameState.board.food - Array of food positions, each with x and y.
+ * @param {Array<Object>} gameState.board.snakes - Array of snake objects on the board.
+ * @param {Object} gameState.you - The player's snake object (used to distinguish your snake).
+ */
+
 export function floodFill(startPos, boardState, maxIterations = 1000) {
     const { width, height, map } = boardState;
     const visited = Array(height).fill(null).map(() => Array(width).fill(false));
