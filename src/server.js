@@ -14,26 +14,26 @@ export default function runServer(handlers) {
   const app = express();
   app.use(express.json());
 
-  app.get("/", (req, res) => {
-    res.send(handlers.info());
+  app.get("/", (request, respont) => {
+    respont.send(handlers.info());
   });
 
-  app.post("/start", (req, res) => {
-    handlers.start(req.body);
-    res.send("ok");
+  app.post("/start", (request, respont) => {
+    handlers.start(request.body);
+    respont.send("ok");
   });
 
-  app.post("/move", (req, res) => {
-    res.send(handlers.move(req.body));
+  app.post("/move", (request, respont) => {
+    respont.send(handlers.move(request.body));
   });
 
-  app.post("/end", (req, res) => {
-    handlers.end(req.body);
-    res.send("ok");
+  app.post("/end", (request, respont) => {
+    handlers.end(request.body);
+    respont.send("ok");
   });
 
-  app.use(function (req, res, next) {
-    res.set("Server", "battlesnake/replit/starter-snake-javascript");
+  app.use(function (request, respont, next) {
+    respont.set("Server", "battlesnake/replit/starter-snake-javascript");
     next();
   });
 

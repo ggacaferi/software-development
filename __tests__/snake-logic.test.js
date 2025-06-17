@@ -5,6 +5,8 @@ import {
   findClosestFood,
   allowTailCollision,
   findSmallestSnakeToHunt,
+  evaluateGameState,
+  chooseBestMoveWithLookahead,
 } from "../src/snakeLogic.js";
 import { describe, it, expect, test } from "@jest/globals";
 
@@ -269,9 +271,7 @@ describe("snakeLogic", () => {
     
           expect(isMoveSafe.up).toBe(true);
         });
-      });
-    
-      // --- Additional tests for findSmallestSnakeToHunt ---
+  });
 
   describe('findSmallestSnakeToHunt', () => {
   it('should return null when no smaller snakes exist', () => {
@@ -306,5 +306,94 @@ describe("snakeLogic", () => {
       console.error("Caught expected error:", error.message);
     }
   });
-  }
-)});
+  });
+describe("evaluateGameState", () => {
+  it("prefers being closer to food", () => {
+    const gameState = {
+      you: { body: [{ x: 2, y: 2 }], length: 3, health: 90 },
+      board: {
+        width: 7,
+        height: 7,
+        food: [{ x: 3, y: 2 }],
+        snakes: [
+          { id: "me", body: [{ x: 2, y: 2 }], length: 3 },
+        ],
+      },
+    };
+    const isMoveSafe = { up: true, down: true, left: true, right: true };
+    const scoreNear = evaluateGameState(gameState, isMoveSafe);
+
+    gameState.you.body[0] = { x: 0, y: 0 }; // farther from food
+    const scoreFar = evaluateGameState(gameState, isMoveSafe);
+
+    expect(scoreNear).toBeGreaterThan(scoreFar);
+  });
+
+  it("prefers more safe moves", () => {
+    const gameState = {
+      you: { body: [{ x: 2, y: 2 }], length: 3, health: 90 },
+      board: {
+        width: 7,
+        height: 7,
+        food: [],
+        snakes: [
+          { id: "me", body: [{ x: 2, y: 2 }], length: 3 },
+        ],
+      },
+    };
+    const isMoveSafeMany = { up: true, down: true, left: true, right: true };
+    const isMoveSafeFew = { up: false, down: false, left: true, right: false };
+    expect(evaluateGameState(gameState, isMoveSafeMany)).toBeGreaterThan(
+      evaluateGameState(gameState, isMoveSafeFew)
+    );
+  });
+});
+
+describe("chooseBestMoveWithLookahead", () => {
+  it("chooses a safe move when only one is available", () => {
+    const gameState = {
+      you: { body: [{ x: 0, y: 0 }], length: 3, health: 90 },
+      board: {
+        width: 3,
+        height: 3,
+        food: [],
+        snakes: [
+          { id: "me", body: [{ x: 0, y: 0 }], length: 3 },
+        ],
+      },
+    };
+    // Only "up" is safe (not out of bounds)
+    expect(chooseBestMoveWithLookahead(gameState)).toBe("up");
+  });
+
+  it("returns null if no moves are safe", () => {
+    const gameState = {
+      you: { body: [{ x: 0, y: 0 }], length: 3, health: 90 },
+      board: {
+        width: 1,
+        height: 1,
+        food: [],
+        snakes: [
+          { id: "me", body: [{ x: 0, y: 0 }], length: 3 },
+        ],
+      },
+    };
+    expect(chooseBestMoveWithLookahead(gameState)).toBeNull();
+  });
+
+  it("prefers moving towards food if safe", () => {
+    const gameState = {
+      you: { body: [{ x: 1, y: 1 }], length: 3, health: 90 },
+      board: {
+        width: 3,
+        height: 3,
+        food: [{ x: 2, y: 1 }],
+        snakes: [
+          { id: "me", body: [{ x: 1, y: 1 }], length: 3 },
+        ],
+      },
+    };
+    expect(chooseBestMoveWithLookahead(gameState)).toBe("right");
+  });
+});
+});
