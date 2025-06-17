@@ -20,11 +20,16 @@
  * @param {Object} gameState.you - The player's snake object (used to distinguish your snake).
  */
 
-export function floodFill(startPos, boardState, maxIterations = 1000) {
+export function floodFill(startPos, boardState, maxIterations = null) {
     const { width, height, map } = boardState;
     const visited = Array(height).fill(null).map(() => Array(width).fill(false));
     const queue = [];
     let area = 0;
+
+    // Dynamically set maxIterations based on map size if not provided
+    if (!maxIterations) {
+        maxIterations = Math.min(width * height, 1000); // Cap iterations for large maps
+    }
 
     // Check if starting position is out of bounds or blocked
     if (startPos.x < 0 || startPos.x >= width ||
