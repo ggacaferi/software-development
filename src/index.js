@@ -16,7 +16,7 @@
 
 
 import runServer from './server.js';
-import { preventSelfCollision, preventWallCollision, preventOtherSnakeCollision, findClosestFood, allowTailCollision } from './snakeLogic.js';
+import { preventSelfCollision, preventWallCollision, preventOtherSnakeCollision, findClosestFood, allowTailCollision, findSmallestSnakeToHunt, findClosestSmallerSnake} from './snakeLogic.js';
 import { printBoard } from './boardPrinter.js';
 import { headToHeadMovement } from './headToHeadMovement.js';
 import { aStar } from './pathfinding.js'; // Import the A* function
@@ -69,6 +69,33 @@ function end(gameState) {
  */
 
 
+/**
+ * Gets the next move direction based on the current position and next step
+ * @param {Object} myHead - The head position of the snake
+ * @param {Object} nextStep - The next position to move to
+ * @returns {string} The direction to move
+ */
+function getDirectionToTarget(myHead, nextStep) {
+  if (nextStep.x < myHead.x) return "left";
+  if (nextStep.x > myHead.x) return "right";
+  if (nextStep.y < myHead.y) return "down";
+  return "up";
+}
+
+/**
+ * Determines target for the snake based on game conditions
+ * @param {Object} gameState - The current game state
+ * @param {Object} isMoveSafe - Object containing safe move directions
+ * @returns {Object} The target position
+ */
+function determineTarget(gameState, isMoveSafe) {
+  const smallerSnakeMove = findSmallestSnakeToHunt(gameState, isMoveSafe, gameState.you.length);
+  if (smallerSnakeMove) {
+    return findClosestSmallerSnake(gameState);
+  }
+  return findClosestFood(gameState, isMoveSafe);
+}
+
 function move(gameState) {
   printBoard(gameState);
 
@@ -80,28 +107,13 @@ function move(gameState) {
   };
 
   const myHead = gameState.you.body[0];
-
-  let target = null;
-  let path = [];
-
-  const smallerSnakeMove = findSmallestSnakeToHunt(gameState, isMoveSafe, gameState.you.length);
-  if (smallerSnakeMove) {
-    target = findClosestSmallerSnake(gameState);
-  } else {
-    target = findClosestFood(gameState, isMoveSafe);
-  }
-
+  const target = determineTarget(gameState, isMoveSafe);
+  
   if (target) {
-    path = aStar(myHead, target, gameState.board);
-  }
-
-  if (path.length > 0) {
-    const nextStep = path[1];
-    if (nextStep) {
-      if (nextStep.x < myHead.x) return { move: "left" };
-      if (nextStep.x > myHead.x) return { move: "right" };
-      if (nextStep.y < myHead.y) return { move: "down" };
-      if (nextStep.y > myHead.y) return { move: "up" };
+    const path = aStar(myHead, target, gameState.board);
+    
+    if (path.length > 0 && path[1]) {
+      return { move: getDirectionToTarget(myHead, path[1]) };
     }
   }
 

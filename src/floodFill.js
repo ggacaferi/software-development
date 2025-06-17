@@ -52,17 +52,18 @@ export function floodFill(startPos, boardState, maxIterations = null) {
         const current = queue.shift();
         area++;
 
-        for (const dir of directions) {
-            const newX = current.x + dir.x;
-            const newY = current.y + dir.y;
+        for (const direction of directions) {
+            const newX = current.x + direction.x;
+            const newY = current.y + direction.y;
 
             // Check boundaries
             if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
-                // Check if not visited and not blocked
-                if (!visited[newY][newX] && map[newY][newX] !== 1) {
-                    visited[newY][newX] = true;
-                    queue.push({ x: newX, y: newY });
+                // Check if already visited or blocked
+                if (visited[newY][newX] || map[newY][newX] === 1) {
+                    continue;
                 }
+                visited[newY][newX] = true;
+                queue.push({ x: newX, y: newY });
             }
         }
     }
