@@ -31,9 +31,9 @@ function info() {
   return {
     apiversion: "1",
     author: "mouzounis",
-    color: "#FF46A2",
-    head: "all-seeing",
-    tail: "mlh-gene",
+    color: "#00FF00",    // neon green body
+    head:  "pixel",      // pixel-style head
+    tail:  "curled",     // curled tail style
   };
 }
 
