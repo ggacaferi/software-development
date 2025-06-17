@@ -14,30 +14,67 @@
 export function headToHeadMovement(gameState, isMoveSafe) {
   const myHead = gameState.you.body[0]; // Your snake's head position
   const myLength = gameState.you.length; // Your snake's length
+  
+  checkEnemyCollisionPossibilities(gameState, myHead, myLength, isMoveSafe);
+}
+
+/**
+ * Checks if enemy snakes could potentially cause head-to-head collisions
+ * @param {Object} gameState - The current game state
+ * @param {Object} myHead - Your snake's head position
+ * @param {number} myLength - Your snake's length
+ * @param {Object} isMoveSafe - Safe moves object to update
+ */
+function checkEnemyCollisionPossibilities(gameState, myHead, myLength, isMoveSafe) {
   const opponents = gameState.board.snakes; // All snakes on the board
 
   for (const enemy of opponents) {
-    if (enemy.id === gameState.you.id) continue; // Skip your own snake
+    if (enemy.id === gameState.you.id) {
+      continue; // Skip your own snake
+    }
 
-    const enemyHead = enemy.body[0]; // Ensure this is the enemy's head
+    const enemyHead = enemy.body[0]; // Enemy's head
     const enemyLength = enemy.length;
+    
+    checkPossibleCollision(myHead, myLength, enemyHead, enemyLength, isMoveSafe);
+  }
+}
 
-    // Check for head-to-head collision in all directions
-    if (enemyHead.x === myHead.x && enemyHead.y === myHead.y + 1) {
-      // Enemy is above (y increases upward)
-      if (myLength <= enemyLength) isMoveSafe.up = false;
-    }
-    if (enemyHead.x === myHead.x && enemyHead.y === myHead.y - 1) {
-      // Enemy is below
-      if (myLength <= enemyLength) isMoveSafe.down = false;
-    }
-    if (enemyHead.x === myHead.x - 1 && enemyHead.y === myHead.y) {
-      // Enemy is to the left
-      if (myLength <= enemyLength) isMoveSafe.left = false;
-    }
-    if (enemyHead.x === myHead.x + 1 && enemyHead.y === myHead.y) {
-      // Enemy is to the right
-      if (myLength <= enemyLength) isMoveSafe.right = false;
+/**
+ * Evaluates possible head-to-head collisions in each direction
+ * @param {Object} myHead - Your snake's head position
+ * @param {number} myLength - Your snake's length
+ * @param {Object} enemyHead - Enemy snake's head position
+ * @param {number} enemyLength - Enemy snake's length
+ * @param {Object} isMoveSafe - Safe moves object to update
+ */
+function checkPossibleCollision(myHead, myLength, enemyHead, enemyLength, isMoveSafe) {
+  // Define potential collision points and their corresponding directions
+  const collisionChecks = [
+    { x: myHead.x, y: myHead.y + 1, direction: 'up' },
+    { x: myHead.x, y: myHead.y - 1, direction: 'down' },
+    { x: myHead.x - 1, y: myHead.y, direction: 'left' },
+    { x: myHead.x + 1, y: myHead.y, direction: 'right' }
+  ];
+  
+  // Check each potential collision point
+  for (const check of collisionChecks) {
+    if (enemyHead.x === check.x && enemyHead.y === check.y) {
+      evaluateCollisionRisk(myLength, enemyLength, isMoveSafe, check.direction);
     }
   }
+}
+
+/**
+ * Determines if a move is unsafe based on snake lengths
+ * @param {number} myLength - Your snake's length
+ * @param {number} enemyLength - Enemy snake's length
+ * @param {Object} isMoveSafe - Safe moves object to update
+ * @param {string} direction - The direction to evaluate
+ */
+function evaluateCollisionRisk(myLength, enemyLength, isMoveSafe, direction) {
+  if (myLength <= enemyLength) {
+    isMoveSafe[direction] = false;
+  }
+  // Otherwise it's safe to move because we're longer
 }

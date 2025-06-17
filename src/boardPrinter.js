@@ -21,7 +21,7 @@ export function printBoard(gameState) {
   const height = gameState.board.height;
 
   // Initialize an empty board filled with '.' (dots) to represent empty spaces
-  let board = Array.from({ length: height }, () => Array(width).fill("."));
+  let board = Array.from({ length: height }, () => new Array(width).fill("."));
 
   // Place food items on the board
   for (const food of gameState.board.food) {
@@ -36,19 +36,18 @@ export function printBoard(gameState) {
     const isMe = snake.id === gameState.you.id;
 
     // Go through each segment of the snake's body
-    snake.body.forEach((segment, index) => {
+    for (let [index, segment] of snake.body.entries()) {
       // Decide what symbol to use
-      const symbol = isMe
-        ? index === 0
-          ? "H"
-          : "S" // Your head is 'H', body is 'S'
-        : index === 0
-          ? "h"
-          : "E"; // Enemy head is 'h', body is 'E'
+      let symbol;
+      if (isMe) {
+        symbol = index === 0 ? "H" : "S"; // Your head is 'H', body is 'S'
+      } else {
+        symbol = index === 0 ? "h" : "E"; // Enemy head is 'h', body is 'E'
+      }
 
       // Again, flip the Y-axis when placing on the board
       board[height - 1 - segment.y][segment.x] = symbol;
-    });
+    }
   }
 
   // Print the board row by row
