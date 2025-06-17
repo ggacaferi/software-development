@@ -129,4 +129,28 @@ describe('floodFill', () => {
         const startPos = { x: 10, y: 10 };
         expect(floodFill(startPos, boardState, 1000)).toBe(400);
     });
+
+    // Test 10: Flood fill avoids hazard cells
+    it('should not count hazard cells as reachable', () => {
+        const boardState = {
+            width: 4,
+            height: 4,
+            map: [
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ],
+            hazards: [
+                { x: 1, y: 1 },
+                { x: 2, y: 1 },
+                { x: 1, y: 2 }
+            ]
+        };
+        const startPos = { x: 0, y: 0 };
+        // The hazard tiles block part of the board, so reachable area is less than total 16
+        expect(floodFill(startPos, boardState)).toBeLessThan(16);
+        // Specifically, it should not count the hazard cells
+        expect(floodFill(startPos, boardState)).toBe(13);
+    });
 });

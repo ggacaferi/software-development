@@ -14,6 +14,15 @@ export function printBoard(gameState) {
     board[height - 1 - food.y][food.x] = "F";
   }
 
+  // Place hazards (after food, before snakes)
+  for (const hazard of gameState.board.hazards) {
+    const y = height - 1 - hazard.y;
+    const x = hazard.x;
+    if (board[y][x] === ".") {
+      board[y][x] = "X"; // Hazard tile
+    }
+  }
+
   // Place all snakes (your snake and opponents) on the board
   for (const snake of gameState.board.snakes) {
     // Check if the snake is yours

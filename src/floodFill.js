@@ -5,6 +5,7 @@
 
 export function floodFill(startPos, boardState, maxIterations = 1000) {
     const { width, height, map } = boardState;
+    const hazarMap = new Set((boardState.hazards || []).map(pos => `${pos.x},${pos.y}`));
     const visited = Array(height).fill(null).map(() => Array(width).fill(false));
     const queue = [];
     let area = 0;
@@ -12,7 +13,8 @@ export function floodFill(startPos, boardState, maxIterations = 1000) {
     // Check if starting position is out of bounds or blocked
     if (startPos.x < 0 || startPos.x >= width ||
         startPos.y < 0 || startPos.y >= height ||
-        map[startPos.y][startPos.x] === 1) {
+        map[startPos.y][startPos.x] === 1 ||
+        hazarMap.has(`${startPos.x},${startPos.y}`)) {
         return 0;
     }
 
@@ -37,7 +39,7 @@ export function floodFill(startPos, boardState, maxIterations = 1000) {
             // Check boundaries
             if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
                 // Check if not visited and not blocked
-                if (!visited[newY][newX] && map[newY][newX] !== 1) {
+                if (!visited[newY][newX] && map[newY][newX] !== 1 && !hazardMap.has(`${newX},${newY}`)) {
                     visited[newY][newX] = true;
                     queue.push({ x: newX, y: newY });
                 }
