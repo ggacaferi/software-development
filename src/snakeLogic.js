@@ -269,7 +269,7 @@ export function allowTailCollision(gameState, isMoveSafe) {
  * @param {Object} myHead - Position of my snake's head
  * @returns {Object|null} The head of the closest smaller snake, or null
  */
-function findClosestSmallerSnake(smallerSnakes, myHead) {
+export function findClosestSmallerSnake(smallerSnakes, myHead) {
   let closestSnake = null;
   let minDistance = Infinity;
   
