@@ -45,21 +45,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const summary = require('./coverage/coverage-summary.json');
-            const lines = summary.total.lines.pct;
-            const statements = summary.total.statements.pct;
-            const branches = summary.total.branches.pct;
-            const functions = summary.total.functions.pct;
-            const pass = lines >= 50;
-            const table = `
-| Metric     | % Covered |
-|------------|-----------|
-| Lines      | ${lines}% |
-| Statements | ${statements}% |
-| Branches   | ${branches}% |
-| Functions  | ${functions}% |
-`;
-            const body = `🧪 **Test Coverage Results**\n${table}\n${pass ? '✅ Coverage is above 50%.' : '❌ Coverage is below 50%!'}`
+            const coverage = '${{ steps.coverage-check.outputs.coverage }}';
+            const body = `🧪 **Test Coverage:** ${coverage}%\n${coverage < 50 ? '❌ Coverage is below 50%!' : '✅ Coverage is above 50%.'}`;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
