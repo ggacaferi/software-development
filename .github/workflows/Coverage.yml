@@ -1,36 +1,12 @@
-name: Coverage
-
+name: 'coverage'
 on:
-  pull_request:
-    branches:
-      - main
-      - develop
-
+    pull_request:
+        branches:
+            - master
+            - main
 jobs:
-  coverage:
-    name: Run Coverage
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Debug Node.js environment
-        run: node -v && npm -v && npm ls
-
-      - name: Run tests with coverage
-        run: npm run test:coverage
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
+    coverage:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: ArtiomTr/jest-coverage-report-action@v2

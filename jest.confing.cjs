@@ -12,6 +12,11 @@ module.exports = {
     '!src/index.js',
     '!src/server.js'
   ],
+  coverageThreshold: {
+        global: {
+            lines: 50,
+        },
+    },
   moduleFileExtensions: ['js', 'jsx', 'json'],
   verbose: true
 };
