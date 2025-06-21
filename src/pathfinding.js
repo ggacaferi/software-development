@@ -2,6 +2,7 @@
 
 export function aStar(start, goal, gameState) {
   const openSet = [start];
+  const closedSet = new Set();
   const cameFrom = {};
   const gScore = {};
   const fScore = {};
@@ -19,11 +20,23 @@ export function aStar(start, goal, gameState) {
     let current = findNodeWithLowestFScore(openSet, fScore);
     openSet.splice(openSet.indexOf(current), 1);
 
+    // Add to closed set
+    closedSet.add(`${current.x},${current.y}`);
+
     if (isGoalReached(current, goal)) {
       return reconstructPath(current, cameFrom);
     }
 
-    processNeighbors(current, goal, openSet, cameFrom, gScore, fScore, directions, width, height, map);
+    for (const dir of directions) {
+      const neighbor = { x: current.x + dir.x, y: current.y + dir.y };
+      const neighborKey = `${neighbor.x},${neighbor.y}`;
+      if (
+        isValidNeighbor(neighbor, width, height, map) &&
+        !closedSet.has(neighborKey)
+      ) {
+        updateNeighborScores(current, neighbor, goal, openSet, cameFrom, gScore, fScore);
+      }
+    }
   }
 
   return [];
@@ -89,3 +102,10 @@ function updateNeighborScores(current, neighbor, goal, openSet, cameFrom, gScore
 function heuristic(a, b) {
   return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
+export {
+  initializeScores,
+  findNodeWithLowestFScore,
+  isGoalReached,
+  reconstructPath,
+  processNeighbors
+};
