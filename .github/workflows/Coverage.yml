@@ -1,2 +1,74 @@
 name: Coverage
-  uses: ArtiomTr/jest-coverage-report-action@v2.3.1
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  coverage:
+    name: Run Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Debug Node.js environment
+        run: node -v && npm -v && npm ls
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Check coverage threshold
+        id: coverage-check
+        run: |
+          COVERAGE=$(node -pe "require('./coverage/coverage-summary.json').total.lines.pct")
+          echo "Total coverage: $COVERAGE%"
+          echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+          if [ "$(echo "$COVERAGE < 50" | bc)" -eq 1 ]; then
+            echo "Test coverage ($COVERAGE%) is below 50%!"
+            exit 1
+          fi
+
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = require('./coverage/coverage-summary.json');
+            const lines = summary.total.lines.pct;
+            const statements = summary.total.statements.pct;
+            const branches = summary.total.branches.pct;
+            const functions = summary.total.functions.pct;
+            const pass = lines >= 50;
+            const table = `
+| Metric     | % Covered |
+|------------|-----------|
+| Lines      | ${lines}% |
+| Statements | ${statements}% |
+| Branches   | ${branches}% |
+| Functions  | ${functions}% |
+`;
+            const body = `🧪 **Test Coverage Results**\n${table}\n${pass ? '✅ Coverage is above 50%.' : '❌ Coverage is below 50%!'}`
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
