@@ -2,7 +2,8 @@ module.exports = {
   testEnvironment: 'node',
   transform: {},
   clearMocks: true,
-  coverageDirectory: 'coverage',
+  coverageDirectory: "coverage",
+  coverageReporters: ["json-summary", "lcov", "text"],
   testMatch: [
     '**/__tests__/**/*.test.[jt]s?(x)',
     '**/__tests__/*.[jt]s?(x)'
