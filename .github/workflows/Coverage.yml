@@ -1,2 +1,2 @@
-name: Jest coverage report
+name: Coverage
 uses: ArtiomTr/jest-coverage-report-action@v2.3.1
