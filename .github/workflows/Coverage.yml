@@ -5,6 +5,9 @@ on:
     branches:
       - main
       - develop
+permissions:
+  pull-requests: write
+  issues: write
 
 jobs:
   coverage:
